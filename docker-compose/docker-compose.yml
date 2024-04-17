@@ -1,0 +1,60 @@
+version: '3.7'
+services:
+  config-server:
+    image: yodert/config-server:v1
+    ports:
+      - "8888:8888"
+    restart: always
+    networks:
+      - operationapibank
+  service-eureka-server:
+    image: yodert/service-eureka-server:v1
+    ports:
+      - "8761:8761"
+    restart: always
+    networks:
+      - operationapibank
+  microservices-postgres-user:
+    image: yodert/postgres:16-alpine
+    ports:
+      - "5433:5432"
+    restart: always
+    networks:
+      - operationapibank
+    environment: 
+      POSTGRES_DB: operations-api
+      POSTGRES_PASSWORD: admin
+  microservices-postgres12:
+    image: yodert/postgres:16-alpine
+    ports:
+      - "5434:5432"
+    restart: always
+    networks:
+      - operationapibank
+    environment: 
+      POSTGRES_DB: transactions-api
+      POSTGRES_PASSWORD: admin
+  service-users:
+    image: yodert/service-users:v1
+    ports:
+      - "8001:8001"
+    restart: always
+    networks:
+      - operationapibank
+    depends_on: 
+      - config-server
+      - service-eureka-server
+      - microservices-postgres-user
+  service-transactions:
+    image: yodert/service-transactions:v1
+    ports:
+      - "8002:8002"
+    restart: always
+    networks:
+      - operationapibank
+    depends_on: 
+      - config-server
+      - service-eureka-server
+      - microservices-postgres12
+networks:
+  operationapibank:

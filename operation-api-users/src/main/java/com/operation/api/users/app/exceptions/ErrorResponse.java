@@ -1,0 +1,16 @@
+package com.operation.api.users.app.exceptions;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+public class ErrorResponse {
+	
+	private boolean success;
+	private String message;
+	private int statusCode;
+
+}
